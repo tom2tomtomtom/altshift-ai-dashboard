@@ -364,6 +364,7 @@
     <button class="tab" onclick="showTab('tools', event)">Tools &amp; Infrastructure</button>
     <button class="tab" onclick="showTab('people', event)">People</button>
     <button class="tab" onclick="showTab('virtual', event)">The Virtual Team</button>
+    <button class="tab" onclick="showTab('skills', event)">Skills Inventory</button>
     <button class="tab" onclick="showTab('next', event)">What's Next</button>
   </div>
 
@@ -412,8 +413,8 @@
         </div>
 
         <div class="card">
-          <div class="card-header"><div class="card-title">Claude Code Skills Development</div><span class="badge badge-yellow">WIP</span></div>
-          <div class="card-body">Custom Claude Code skills for Alt/Shift workflows. Initial skills built &mdash; next step is identifying the highest-utility skills for the team and building those out. Repeatable, expert-level capabilities deployed via simple commands.</div>
+          <div class="card-header"><div class="card-title">Claude Code Skills</div><span class="badge badge-yellow">20 Built &middot; 0 Adopted</span></div>
+          <div class="card-body"><strong style="color:var(--accent)">20 custom skills built</strong> across 5 categories: Strategy &amp; Planning (3), Research &amp; Intelligence (4), Writing &amp; Content (6), Client &amp; Business (5), Reputation (2). Covers everything from media releases to crisis comms to competitor analysis. <strong style="color:var(--red)">Team not yet aware or using them</strong> &mdash; needs a hands-on adoption session.</div>
         </div>
 
         <div class="card">
@@ -719,6 +720,64 @@
     </div>
   </div>
 
+  <!-- TAB: SKILLS INVENTORY -->
+  <div id="skills" class="tab-content">
+
+    <div class="highlight-box" style="border-color:rgba(234,179,8,0.3);background:rgba(234,179,8,0.08)">
+      <strong style="color:var(--yellow)">20 custom AI skills built for Alt/Shift &mdash; 0 currently adopted by the team.</strong><br>
+      Each skill is a repeatable, expert-level capability triggered by a simple command. They encode Alt/Shift's house style, strategic frameworks, and best practices. The team needs a hands-on session to see them in action.
+    </div>
+
+    <div class="section">
+      <div class="section-title">Strategy &amp; Planning <span class="badge badge-accent" style="margin-left:8px">3 skills</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">strategy-brief-builder</div><div class="ws-item-detail">Builds structured comms strategy briefs from loose inputs. Takes a messy brief or verbal direction and outputs a proper strategic framework.</div></div><span class="badge badge-red">Not Adopted</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">content-calendar-generator</div><div class="ws-item-detail">Generates content calendars with themed planning and tentpole mapping. Saves hours of manual calendar building.</div></div><span class="badge badge-red">Not Adopted</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">event-launch-planner</div><div class="ws-item-detail">Creates run sheets, logistics checklists, and launch timelines. Everything needed to plan an event or product launch.</div></div><span class="badge badge-red">Not Adopted</span></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Research &amp; Intelligence <span class="badge badge-accent" style="margin-left:8px">4 skills</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">competitor-analysis</div><div class="ws-item-detail">Deep-dive on specific competitors &mdash; positioning, messaging, vulnerabilities. The kind of analysis that usually takes a day, done in minutes.</div></div><span class="badge badge-red">Not Adopted</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">competitor-category-scanner</div><div class="ws-item-detail">Market-level landscape analysis and category dynamics. Broader than single-competitor &mdash; maps the whole playing field.</div></div><span class="badge badge-red">Not Adopted</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">media-list-intelligence</div><div class="ws-item-detail">Researches journalists and prioritises media contacts. Builds targeted media lists with coverage history and beat relevance.</div></div><span class="badge badge-red">Not Adopted</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">audience-cultural-insight</div><div class="ws-item-detail">Audience research, demographic analysis, and cultural trend spotting. Powers the insight that makes pitches land.</div></div><span class="badge badge-red">Not Adopted</span></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Writing &amp; Content <span class="badge badge-accent" style="margin-left:8px">6 skills</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">media-release-writer</div><div class="ws-item-detail">Writes media releases in Alt/Shift house style. Proper structure, strong lead, news angle &mdash; ready for light edits, not a rewrite.</div></div><span class="badge badge-red">Not Adopted</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">media-pitch-crafter</div><div class="ws-item-detail">Crafts media pitches with strong angles and journalist tailoring. Different from a release &mdash; this is the email that gets it opened.</div></div><span class="badge badge-red">Not Adopted</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">social-copy-writer</div><div class="ws-item-detail">Platform-specific social copy for LinkedIn, Instagram, TikTok, etc. Knows the format and tone differences across channels.</div></div><span class="badge badge-red">Not Adopted</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">campaign-copy-rollout</div><div class="ws-item-detail">Rolls out campaign copy across platforms and funnel stages. One brief, all the variations &mdash; awareness to conversion.</div></div><span class="badge badge-red">Not Adopted</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">talking-points</div><div class="ws-item-detail">Message frameworks and spokesperson briefings. Key messages, Q&amp;A prep, bridging statements.</div></div><span class="badge badge-red">Not Adopted</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">email-drafter</div><div class="ws-item-detail">Professional emails for pitching, follow-ups, and outreach. Gets the tone right without sounding like a robot.</div></div><span class="badge badge-red">Not Adopted</span></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Client &amp; Business <span class="badge badge-accent" style="margin-left:8px">5 skills</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">client-comms-writer</div><div class="ws-item-detail">Status reports, WIP updates, and recap emails in Alt/Shift voice. The admin writing that eats into billable time.</div></div><span class="badge badge-red">Not Adopted</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">new-business-proposal-writer</div><div class="ws-item-detail">Proposals, pitch decks, and capability statements. Structured, persuasive, and on-brand.</div></div><span class="badge badge-red">Not Adopted</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">pitch-rfp-reviewer</div><div class="ws-item-detail">Evaluates pitch responses for completeness and persuasiveness. A second pair of eyes before submission.</div></div><span class="badge badge-red">Not Adopted</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">coverage-report-builder</div><div class="ws-item-detail">Media coverage reports with sentiment and reach analysis. Client-ready reporting without the manual compilation.</div></div><span class="badge badge-red">Not Adopted</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">meeting-notes-actions</div><div class="ws-item-detail">Structured meeting summaries with action items and owners. No more &ldquo;who was meant to do that?&rdquo;</div></div><span class="badge badge-red">Not Adopted</span></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Reputation <span class="badge badge-accent" style="margin-left:8px">2 skills</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">crisis-comms-drafter</div><div class="ws-item-detail">Holding statements, stakeholder messaging, and escalation frameworks. When something goes wrong, this saves critical hours.</div></div><span class="badge badge-red">Not Adopted</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">brand-voice-enforcer</div><div class="ws-item-detail">Checks copy against brand guidelines for approval-readiness. Catches tone and style issues before the client does.</div></div><span class="badge badge-red">Not Adopted</span></div>
+    </div>
+
+    <div class="highlight-box" style="margin-top:24px">
+      <strong style="color:var(--accent)">Adoption Plan</strong><br>
+      <strong>Step 1:</strong> In-office session &mdash; walk the team through 5&ndash;6 highest-utility skills on real briefs<br>
+      <strong>Step 2:</strong> Identify 3&ndash;4 &ldquo;daily drivers&rdquo; &mdash; the skills people would use every day<br>
+      <strong>Step 3:</strong> 1:1 pairing sessions on actual projects to build muscle memory<br>
+      <strong>Step 4:</strong> Track usage and iterate based on what sticks
+    </div>
+
+  </div>
+
   <!-- TAB: WHAT'S NEXT -->
   <div id="next" class="tab-content">
 
@@ -741,8 +800,16 @@
         </div>
       </div>
 
-      <div class="next-step">
+      <div class="next-step" style="border-left: 3px solid var(--accent)">
         <div class="step-num">3</div>
+        <div>
+          <div class="step-title">Skills Adoption Session</div>
+          <div class="step-desc"><strong style="color:var(--accent)">20 custom AI skills built, zero adopted.</strong> The team doesn't know they exist. Need a hands-on in-office session &mdash; walk through real briefs using the skills, let people see the output. Focus on the daily-use ones first: media releases, competitor analysis, content calendars, meeting notes. See <strong>Skills Inventory</strong> tab for the full list.</div>
+        </div>
+      </div>
+
+      <div class="next-step">
+        <div class="step-num">4</div>
         <div>
           <div class="step-title">IHG Pitch Follow-Through</div>
           <div class="step-desc">Intelligence dashboard delivered. JJ to review and confirm next steps for the pitch team.</div>
@@ -754,7 +821,7 @@
       <div class="section-title">Short Term &mdash; This Month</div>
 
       <div class="next-step">
-        <div class="step-num">4</div>
+        <div class="step-num">5</div>
         <div>
           <div class="step-title">Culture Wire v3.0 &mdash; Next.js Rebuild</div>
           <div class="step-desc">9 of 10 phases complete. Auth flow is the final blocker (magic link redirect issue). Once resolved: modern UI, faster searches, multi-tenant ready. Alt/Shift gets the upgrade at no additional cost.</div>
@@ -762,7 +829,7 @@
       </div>
 
       <div class="next-step">
-        <div class="step-num">5</div>
+        <div class="step-num">6</div>
         <div>
           <div class="step-title">Efficiency Audit</div>
           <div class="step-desc">Map the biggest remaining time drains across the agency. Identify where existing tools are underutilised and where quick automation wins exist. No new builds &mdash; just maximising what's already deployed.</div>
@@ -770,7 +837,7 @@
       </div>
 
       <div class="next-step">
-        <div class="step-num">6</div>
+        <div class="step-num">7</div>
         <div>
           <div class="step-title">Culture Wire &times; Damian Deep Dive</div>
           <div class="step-desc">Rescheduled meeting with Damian. Align on how Culture Wire integrates into the planning team's daily workflow and what customisation is needed.</div>
@@ -782,7 +849,7 @@
       <div class="section-title">Medium Term</div>
 
       <div class="next-step">
-        <div class="step-num">7</div>
+        <div class="step-num">8</div>
         <div>
           <div class="step-title">Supabase Housekeeping</div>
           <div class="step-desc">Resolve security vulnerability alert. Add tax ID to org. Ensure data infrastructure is clean and compliant.</div>
@@ -790,7 +857,7 @@
       </div>
 
       <div class="next-step">
-        <div class="step-num">8</div>
+        <div class="step-num">9</div>
         <div>
           <div class="step-title">Website Video Fix</div>
           <div class="step-desc">Replace broken Vimeo embed with direct video file. Sam/Michael investigating &mdash; Tom can fix if needed.</div>
@@ -798,7 +865,7 @@
       </div>
 
       <div class="next-step">
-        <div class="step-num">9</div>
+        <div class="step-num">10</div>
         <div>
           <div class="step-title">Expanded Automation Opportunities</div>
           <div class="step-desc">Based on efficiency audit: potential for automated media monitoring alerts, client report generation, social content calendar AI, and PR coverage tracking. Each evaluated on time saved vs. effort to build.</div>
