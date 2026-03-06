@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alt/Shift AI Engagement Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0a;
+    --card: #141414;
+    --card-hover: #1a1a1a;
+    --border: #2a2a2a;
+    --text: #e5e5e5;
+    --text-dim: #888;
+    --accent: #00b4d8;
+    --accent-glow: rgba(0, 180, 216, 0.15);
+    --green: #22c55e;
+    --yellow: #eab308;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --red: #ef4444;
+    --orange: #f97316;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .container { max-width: 1400px; margin: 0 auto; padding: 40px 24px; }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .header h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; text-transform: uppercase; }
+  .header h1 span { color: var(--accent); }
+  .header .subtitle { color: var(--text-dim); font-size: 14px; margin-top: 4px; }
+  .header .date-badge {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 16px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .stat-card:hover { border-color: var(--accent); background: var(--card-hover); }
+  .stat-number { font-size: 32px; font-weight: 800; color: var(--accent); line-height: 1; }
+  .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); margin-top: 6px; }
+
+  .section { margin-bottom: 40px; }
+  .section-title {
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title::before { content: ''; width: 4px; height: 18px; background: var(--accent); border-radius: 2px; }
+
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 24px;
+    background: var(--card);
+    border-radius: 10px;
+    padding: 4px;
+    border: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .tab {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-dim);
+    white-space: nowrap;
+    border: none;
+    background: none;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { background: var(--accent); color: #fff; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    transition: all 0.2s;
+  }
+  .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 12px; }
+  .card-title { font-size: 14px; font-weight: 600; }
+  .card-body { font-size: 13px; color: var(--text-dim); line-height: 1.7; }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .badge-green { background: rgba(34,197,94,0.15); color: var(--green); }
+  .badge-yellow { background: rgba(234,179,8,0.15); color: var(--yellow); }
+  .badge-blue { background: rgba(59,130,246,0.15); color: var(--blue); }
+  .badge-purple { background: rgba(168,85,247,0.15); color: var(--purple); }
+  .badge-red { background: rgba(239,68,68,0.15); color: var(--red); }
+  .badge-accent { background: var(--accent-glow); color: var(--accent); }
+  .badge-dim { background: rgba(136,136,136,0.15); color: var(--text-dim); }
+  .badge-orange { background: rgba(249,115,22,0.15); color: var(--orange); }
+
+  .timeline { position: relative; }
+  .timeline::before { content: ''; position: absolute; left: 16px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+  .timeline-item { position: relative; padding-left: 48px; margin-bottom: 20px; }
+  .timeline-dot {
+    position: absolute;
+    left: 9px; top: 6px;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 3px solid var(--accent);
+    background: var(--bg);
+  }
+  .timeline-date { font-size: 12px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .timeline-title { font-size: 14px; font-weight: 600; margin-top: 2px; }
+  .timeline-desc { font-size: 13px; color: var(--text-dim); margin-top: 2px; }
+
+  .ws-block {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .ws-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .ws-num {
+    width: 28px; height: 28px;
+    background: var(--accent);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #fff;
+    flex-shrink: 0;
+  }
+  .ws-sub { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-dim); margin: 14px 0 8px; }
+  .ws-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .ws-item:last-child { border-bottom: none; }
+  .ws-item-name { font-size: 13px; font-weight: 500; }
+  .ws-item-detail { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+
+  .people-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
+  .person {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s;
+  }
+  .person:hover { border-color: var(--accent); }
+  .person-avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--accent-glow);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 12px; color: var(--accent);
+    flex-shrink: 0;
+  }
+  .person-name { font-size: 13px; font-weight: 600; }
+  .person-role { font-size: 11px; color: var(--text-dim); margin-top: 1px; }
+
+  .highlight-box {
+    background: var(--accent-glow);
+    border: 1px solid rgba(0,180,216,0.3);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    font-size: 13px;
+  }
+  .highlight-box strong { color: var(--accent); }
+
+  /* Impact comparison */
+  .impact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 700px) { .impact-grid { grid-template-columns: 1fr; } }
+  .impact-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .impact-card h3 {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+  }
+  .impact-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .impact-row:last-child { border-bottom: none; }
+  .impact-value { font-weight: 700; }
+
+  .bar-chart { margin-top: 16px; }
+  .bar-row { margin-bottom: 10px; }
+  .bar-label { font-size: 12px; margin-bottom: 4px; display: flex; justify-content: space-between; }
+  .bar-track { height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; background: var(--accent); transition: width 1s ease; }
+
+  .next-step {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+  }
+  .next-step:hover { border-color: var(--accent); }
+  .step-num {
+    width: 28px; height: 28px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; color: #fff;
+    flex-shrink: 0;
+  }
+  .step-title { font-size: 14px; font-weight: 600; }
+  .step-desc { font-size: 13px; color: var(--text-dim); margin-top: 3px; }
+
+  .table-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .table-label {
+    padding: 14px 16px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+  }
+  .pipeline-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .pipeline-table th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+  }
+  .pipeline-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .pipeline-table tr:last-child td { border-bottom: none; }
+  .pipeline-table tr:hover td { background: var(--card-hover); }
+  .td-name { font-weight: 500; }
+
+  .footer { text-align: center; padding: 40px 0 20px; color: var(--text-dim); font-size: 12px; }
+
+  @media (max-width: 600px) { .stats-row { grid-template-columns: repeat(3, 1fr); } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <h1>Alt/Shift <span>AI Engagement</span></h1>
+      <div class="subtitle">Tommy Hyde / Redbaez &mdash; AI Consultant</div>
+    </div>
+    <div class="date-badge">Jun 2025 &ndash; Present &bull; 2024 PR Agency of the Year</div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-number">43</div><div class="stat-label">Agency Staff</div></div>
+    <div class="stat-card"><div class="stat-number">24&ndash;36</div><div class="stat-label">Hrs/Wk Saved</div></div>
+    <div class="stat-card"><div class="stat-number">4</div><div class="stat-label">Pitches Supported</div></div>
+    <div class="stat-card"><div class="stat-number">5</div><div class="stat-label">AI Systems Live</div></div>
+    <div class="stat-card"><div class="stat-number">3</div><div class="stat-label">n8n Workflows</div></div>
+    <div class="stat-card"><div class="stat-number">8</div><div class="stat-label">Signal Types</div></div>
+    <div class="stat-card"><div class="stat-number">6am</div><div class="stat-label">Daily Slack Brief</div></div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('done', event)">What's Been Done</button>
+    <button class="tab" onclick="showTab('impact', event)">Impact &amp; Efficiency</button>
+    <button class="tab" onclick="showTab('pitches', event)">Pitch Support</button>
+    <button class="tab" onclick="showTab('tools', event)">Tools &amp; Infrastructure</button>
+    <button class="tab" onclick="showTab('people', event)">People</button>
+    <button class="tab" onclick="showTab('virtual', event)">The Virtual Team</button>
+    <button class="tab" onclick="showTab('next', event)">What's Next</button>
+  </div>
+
+  <!-- TAB: WHAT'S BEEN DONE -->
+  <div id="done" class="tab-content active">
+
+    <div class="section">
+      <div class="section-title">AI Systems &mdash; Built &amp; Running</div>
+      <div class="cards-grid">
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Traffic Manager</div><span class="badge badge-green">Live</span></div>
+          <div class="card-body">AI extracts project data from meeting transcripts &mdash; briefs, deadlines, action items, resource needs. Replaces manual meeting note processing across the agency. <strong style="color:var(--accent)">Saves 5&ndash;10 hrs/week.</strong></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Opportunity Intelligence</div><span class="badge badge-green">Live</span></div>
+          <div class="card-body">Monitors <strong style="color:var(--accent)">8 signal types</strong> across news, social, and industry sources. Scores and prioritises opportunities. Delivered to Slack at <strong style="color:var(--accent)">6am daily</strong> so the team starts each day with actionable intelligence. <strong style="color:var(--accent)">Saves 10+ hrs/week.</strong></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Culture Wire</div><span class="badge badge-green">Live</span></div>
+          <div class="card-body">Real-time cultural intelligence across <strong style="color:var(--accent)">10 platforms</strong> (Reddit, TikTok, YouTube, Instagram, Twitter, LinkedIn, Facebook, Google Trends, News, Trustpilot). Strategic fit scoring, opportunity tiers, cultural tension analysis. Replaces a dedicated trend analyst. <a href="https://culture-wire-production.up.railway.app/" target="_blank" style="color:var(--accent)">Production app &rarr;</a></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Daily Intelligence Briefings</div><span class="badge badge-green">Live</span></div>
+          <div class="card-body">Automated daily briefs combining industry trends, client-specific signals, competitor activity, and social sentiment. Delivered before the team arrives.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Client Outreach Systems</div><span class="badge badge-green">Live</span></div>
+          <div class="card-body">AI-powered prospecting and outreach workflows. Identifies potential clients, enriches contact data, and generates personalised outreach.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Strategy &amp; Foundation</div>
+      <div class="cards-grid">
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">AI Strategy &amp; Roadmap</div><span class="badge badge-green">Done</span></div>
+          <div class="card-body">Comprehensive AI transformation roadmap. Year 1 investment: <strong style="color:var(--accent)">$84K</strong>. "Virtual team of 5" concept &mdash; AI systems that collectively deliver the output of 5 additional hires across research, analysis, traffic, intelligence, and pitch support.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Claude Code Skills Development</div><span class="badge badge-green">Done</span></div>
+          <div class="card-body">Custom Claude Code skills built specifically for Alt/Shift workflows. Repeatable, expert-level capabilities deployed via simple commands.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">n8n Workflow Automation</div><span class="badge badge-green">Done</span></div>
+          <div class="card-body">Node-based automation workflows connecting AI models, data sources, and delivery channels. Powers the Opportunity Intelligence and daily briefing pipelines.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Security Reviews</div><span class="badge badge-green">Done</span></div>
+          <div class="card-body">Full security assessment of the AI tool stack. Data handling, API key management, and compliance review completed.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Team Training</div><span class="badge badge-green">Done</span></div>
+          <div class="card-body">Hands-on training sessions for the team on Claude, prompt engineering, and using the deployed AI tools effectively in daily work.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: IMPACT & EFFICIENCY -->
+  <div id="impact" class="tab-content">
+
+    <div class="section">
+      <div class="section-title">Weekly Time Savings</div>
+
+      <div class="highlight-box">
+        <strong>Bottom line:</strong> The AI stack frees <strong>24&ndash;36 hours per week</strong> across the agency. For a 43-person team, that's the equivalent of a full-time hire &mdash; without the salary, super, or desk space.
+      </div>
+
+      <div class="bar-chart">
+        <div class="bar-row">
+          <div class="bar-label"><span>Opportunity Intelligence</span><span style="color:var(--accent);font-weight:700">10+ hrs/wk</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:100%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>Traffic Manager</span><span style="color:var(--accent);font-weight:700">5&ndash;10 hrs/wk</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:70%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>Culture Wire (replaces analyst)</span><span style="color:var(--accent);font-weight:700">5&ndash;8 hrs/wk</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:60%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>Daily Briefings</span><span style="color:var(--accent);font-weight:700">3&ndash;5 hrs/wk</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:40%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label"><span>Pitch Research Acceleration</span><span style="color:var(--accent);font-weight:700">Variable (days &rarr; hours per pitch)</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:85%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Cost Comparison</div>
+      <div class="impact-grid">
+        <div class="impact-card" style="border-color:var(--red)">
+          <h3 style="color:var(--red)">Without AI &mdash; Hiring Equivalent</h3>
+          <div class="impact-row"><span>Research Analyst</span><span class="impact-value" style="color:var(--red)">$85K</span></div>
+          <div class="impact-row"><span>Cultural Intelligence Analyst</span><span class="impact-value" style="color:var(--red)">$90K</span></div>
+          <div class="impact-row"><span>Traffic Coordinator</span><span class="impact-value" style="color:var(--red)">$70K</span></div>
+          <div class="impact-row"><span>Intelligence / New Biz Support</span><span class="impact-value" style="color:var(--red)">$80K</span></div>
+          <div class="impact-row"><span>Junior Strategist (pitch support)</span><span class="impact-value" style="color:var(--red)">$75K</span></div>
+          <div class="impact-row" style="border-top:2px solid var(--red);margin-top:8px;padding-top:12px"><span style="font-weight:700">Total annual cost</span><span class="impact-value" style="color:var(--red);font-size:18px">$400K+</span></div>
+          <div class="impact-row"><span style="color:var(--text-dim)">+ super, leave, equipment, management overhead</span></div>
+        </div>
+        <div class="impact-card" style="border-color:var(--green)">
+          <h3 style="color:var(--green)">With AI Stack &mdash; Current Cost</h3>
+          <div class="impact-row"><span>Redbaez retainer</span><span class="impact-value" style="color:var(--green)">Fraction</span></div>
+          <div class="impact-row"><span>Claude API</span><span class="impact-value" style="color:var(--green)">~$200/mo</span></div>
+          <div class="impact-row"><span>n8n</span><span class="impact-value" style="color:var(--green)">~$50/mo</span></div>
+          <div class="impact-row"><span>Apify (data collection)</span><span class="impact-value" style="color:var(--green)">~$50/mo</span></div>
+          <div class="impact-row"><span>Railway (hosting)</span><span class="impact-value" style="color:var(--green)">~$20/mo</span></div>
+          <div class="impact-row" style="border-top:2px solid var(--green);margin-top:8px;padding-top:12px"><span style="font-weight:700">Infrastructure cost</span><span class="impact-value" style="color:var(--green);font-size:18px">~$4K/yr</span></div>
+          <div class="impact-row"><span style="color:var(--green)">Available 24/7. No sick days. Scales instantly.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Efficiency by Function</div>
+      <div class="cards-grid">
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">New Business / Pitches</div><span class="badge badge-accent">Transformed</span></div>
+          <div class="card-body"><strong>Before:</strong> 3&ndash;5 days of manual research per pitch.<br><strong>After:</strong> Comprehensive intelligence dashboard delivered in hours. IHG pitch: full competitive landscape, audience research, and strategic recommendations built same day as brief received.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Account Management</div><span class="badge badge-accent">Transformed</span></div>
+          <div class="card-body"><strong>Before:</strong> Manual meeting notes, missed actions, status reports compiled end-of-week.<br><strong>After:</strong> Traffic Manager extracts project data from every meeting automatically. Nothing falls through the cracks.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Strategy / Planning</div><span class="badge badge-accent">Transformed</span></div>
+          <div class="card-body"><strong>Before:</strong> Weekly manual trend scanning, gut-feel cultural reads, 2-week turnaround on research decks.<br><strong>After:</strong> Culture Wire delivers real-time intelligence with strategic scoring. Research that took weeks now takes minutes.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">New Business Pipeline</div><span class="badge badge-accent">Transformed</span></div>
+          <div class="card-body"><strong>Before:</strong> Reactive &mdash; waiting for RFPs.<br><strong>After:</strong> Opportunity Intelligence surfaces 8 signal types daily at 6am. Proactive pipeline building on autopilot.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: PITCH SUPPORT -->
+  <div id="pitches" class="tab-content">
+
+    <div class="section">
+      <div class="section-title">Pitch &amp; RFP Support Delivered</div>
+
+      <div class="highlight-box">
+        <strong>The pattern:</strong> JJ sends a brief. Tom builds an intelligence dashboard within hours. The agency walks into pitches with deeper research, sharper strategy, and more compelling positioning than teams who spent weeks on it.
+      </div>
+
+      <div class="cards-grid">
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">IHG &mdash; MICE Intelligence Play</div><span class="badge badge-orange">Mar 2026</span></div>
+          <div class="card-body">
+            <strong>Budget:</strong> AUD $93K campaign<br>
+            <strong>Market:</strong> $35.7B Australian business events<br>
+            <strong>Delivered:</strong> Full competitive intelligence dashboard (Marriott, Accor, Hyatt, Hilton), audience research, 4 strategic recommendations (podcast partnerships, trade media, loyalty optimisation, master bill repositioning). Built within hours of receiving the brief &mdash; before anyone else in the business had touched it.
+            <br><a href="https://tom2tomtomtom.github.io/ihg-intelligence-play/" target="_blank" style="color:var(--accent);font-weight:600">View dashboard &rarr;</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Coles &mdash; PR RFP Enhancement</div><span class="badge badge-green">Delivered</span></div>
+          <div class="card-body">
+            <strong>Context:</strong> Coles crashed 237 places in trust rankings. ACCC proceedings over 245 products.<br>
+            <strong>Delivered:</strong> 5-component enhancement package:<br>
+            1. Executive Summary (positioning alt/shift's independence)<br>
+            2. Point of View on Coles' challenges<br>
+            3. Crisis &amp; Issues Capability (critical gap in draft)<br>
+            4. Immediate Opportunities (4 underutilised Coles stories)<br>
+            5. Research Intelligence Summary (trust data, agency landscape, competitor dynamics)
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Xero &mdash; Communications Agency RFP</div><span class="badge badge-green">Delivered</span></div>
+          <div class="card-body">
+            <strong>Value:</strong> $240K/yr retainer ($20K/mo)<br>
+            <strong>Scope:</strong> Narrative leadership, executive profiling (Angad Soin), AI leadership positioning, Tier 1 media relations<br>
+            <strong>AI angle:</strong> Xero specifically asked "What AI tools are you using?" &mdash; Culture Wire, Traffic Manager, and Redbaez's AI stack became the key differentiator.
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Bank Australia &mdash; "The Impossible Question"</div><span class="badge badge-green">Delivered</span></div>
+          <div class="card-body">
+            <strong>Budget:</strong> $80K campaign<br>
+            <strong>Insight:</strong> Customers spend 20 mins researching $6 ethical coffee but zero minutes asking where $47K in savings goes.<br>
+            <strong>Strategy:</strong> One question to Big Four banks: "Could you please tell me exactly what you've done with my deposits?" Every response creates a headline. No Option 4.<br>
+            <strong>Launch:</strong> May 2026
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: TOOLS & INFRASTRUCTURE -->
+  <div id="tools" class="tab-content">
+
+    <div class="ws-block">
+      <div class="ws-title"><div class="ws-num">1</div> AI & Language Models</div>
+
+      <div class="ws-item"><div><div class="ws-item-name">Claude API (Anthropic)</div><div class="ws-item-detail">Powers Culture Wire analysis, pitch research, strategic brief generation, content creation. Claude Code skills for workflow automation.</div></div><span class="badge badge-red">Credits Depleted</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">Perplexity</div><div class="ws-item-detail">Previously used for research. Subscription cancelled &mdash; Claude covers this now.</div></div><span class="badge badge-dim">Cancelled</span></div>
+    </div>
+
+    <div class="ws-block">
+      <div class="ws-title"><div class="ws-num">2</div> Automation & Workflows</div>
+
+      <div class="ws-item"><div><div class="ws-item-name">n8n</div><div class="ws-item-detail">Powers Opportunity Intelligence, daily briefings, and client outreach automation. Node-based visual workflow builder.</div></div><span class="badge badge-green">Active</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">Slack Integration</div><div class="ws-item-detail">Automated delivery channel for intelligence, briefings, and alerts. 6am daily delivery.</div></div><span class="badge badge-green">Active</span></div>
+    </div>
+
+    <div class="ws-block">
+      <div class="ws-title"><div class="ws-num">3</div> Data Collection</div>
+
+      <div class="ws-item"><div><div class="ws-item-name">Apify</div><div class="ws-item-detail">7 actor types for social media data collection (TikTok, Instagram, YouTube, Twitter, LinkedIn, Facebook, Trustpilot). Powers Culture Wire.</div></div><span class="badge badge-green">Active</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">Reddit API (PRAW)</div><div class="ws-item-detail">Direct API integration for Reddit data. Free tier &mdash; saves ~$550&ndash;1,640/yr vs Apify for Reddit.</div></div><span class="badge badge-green">Active</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">Google Trends</div><div class="ws-item-detail">Search trend monitoring for Culture Wire. Integrated into 10-platform pipeline.</div></div><span class="badge badge-green">Active</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">NewsAPI</div><div class="ws-item-detail">Australian news feed for daily briefings and Culture Wire news layer.</div></div><span class="badge badge-green">Active</span></div>
+    </div>
+
+    <div class="ws-block">
+      <div class="ws-title"><div class="ws-num">4</div> Infrastructure</div>
+
+      <div class="ws-item"><div><div class="ws-item-name">Railway</div><div class="ws-item-detail">Hosts Culture Wire production app (Flask). Always-on deployment.</div></div><span class="badge badge-green">Active</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">Supabase</div><div class="ws-item-detail">Database, auth, and storage. Org: "ALT/SHIFT/". Note: security vulnerability alert + tax ID needed.</div></div><span class="badge badge-yellow">Needs Attention</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">GitHub</div><div class="ws-item-detail">Code repos and GitHub Pages for pitch dashboards.</div></div><span class="badge badge-green">Active</span></div>
+    </div>
+
+    <div class="ws-block">
+      <div class="ws-title"><div class="ws-num">5</div> Action Required</div>
+
+      <div class="ws-item"><div><div class="ws-item-name">Claude API Credits</div><div class="ws-item-detail">Credits depleted. Blocking some AI tools from running. Needs topping up immediately.</div></div><span class="badge badge-red">Blocking</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">Supabase Security Alert</div><div class="ws-item-detail">Vulnerability alert on Supabase org. Tax ID also needed.</div></div><span class="badge badge-yellow">Pending</span></div>
+      <div class="ws-item"><div><div class="ws-item-name">Website Video</div><div class="ws-item-detail">Vimeo link broken on Alt/Shift site. Sam/Michael Erb investigating. Tom offered to fix with direct video file.</div></div><span class="badge badge-yellow">Pending</span></div>
+    </div>
+  </div>
+
+  <!-- TAB: PEOPLE -->
+  <div id="people" class="tab-content">
+    <div class="section">
+      <div class="section-title">Alt/Shift Team</div>
+      <div class="people-grid">
+        <div class="person"><div class="person-avatar">JJ</div><div><div class="person-name">Jacqueline "JJ" McPherson</div><div class="person-role">General Manager &mdash; Briefs, strategy, primary contact for pitch support</div></div></div>
+        <div class="person"><div class="person-avatar">DD</div><div><div class="person-name">Damian Davitt</div><div class="person-role">Strategy &mdash; Culture Wire champion, strategic direction</div></div></div>
+        <div class="person"><div class="person-avatar">AJ</div><div><div class="person-name">Alycia Jack</div><div class="person-role">Head of PR &mdash; Culture Wire feedback, PR workflow integration</div></div></div>
+        <div class="person"><div class="person-avatar">SV</div><div><div class="person-name">Sam Vassos</div><div class="person-role">Creative &mdash; Website, creative projects, video content</div></div></div>
+        <div class="person"><div class="person-avatar">BR</div><div><div class="person-name">Borna Robaei</div><div class="person-role">Financial Controller &mdash; Invoicing, subscriptions, API credit management</div></div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Redbaez</div>
+      <div class="people-grid">
+        <div class="person"><div class="person-avatar">TH</div><div><div class="person-name">Tom Hyde</div><div class="person-role">AI Consultant &mdash; Strategy, builds, training, pitch support. tommy@altshift.com.au</div></div></div>
+        <div class="person"><div class="person-avatar">KN</div><div><div class="person-name">Kim Norden</div><div class="person-role">Redbaez &mdash; Invoicing / finance admin</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: THE VIRTUAL TEAM -->
+  <div id="virtual" class="tab-content">
+
+    <div class="section">
+      <div class="section-title">The Virtual Team of 5</div>
+
+      <div class="highlight-box">
+        <strong>The concept:</strong> For a 43-person agency tightening its belt, the AI stack delivers the output of 5 additional team members &mdash; without a single new hire. These aren't hypothetical capabilities. They're running today.
+      </div>
+
+      <div class="cards-grid">
+
+        <div class="card" style="border-left: 3px solid var(--accent)">
+          <div class="card-header"><div class="card-title">1. The Intelligence Officer</div><span class="badge badge-green">Active</span></div>
+          <div class="card-body">
+            <strong>Replaces:</strong> Junior strategist monitoring media<br>
+            <strong>System:</strong> Opportunity Intelligence<br>
+            <strong>Output:</strong> 8 signal types scanned daily, scored, prioritised, delivered to Slack at 6am. Never sleeps, never misses a signal.<br>
+            <strong>Saving:</strong> 10+ hrs/week
+          </div>
+        </div>
+
+        <div class="card" style="border-left: 3px solid var(--accent)">
+          <div class="card-header"><div class="card-title">2. The Cultural Analyst</div><span class="badge badge-green">Active</span></div>
+          <div class="card-body">
+            <strong>Replaces:</strong> Dedicated trend researcher<br>
+            <strong>System:</strong> Culture Wire<br>
+            <strong>Output:</strong> 10-platform cultural radar with strategic fit scoring, opportunity tiers, and tension analysis. Real-time, not last quarter.<br>
+            <strong>Saving:</strong> 5&ndash;8 hrs/week + eliminates 2-week trend report cycle
+          </div>
+        </div>
+
+        <div class="card" style="border-left: 3px solid var(--accent)">
+          <div class="card-header"><div class="card-title">3. The Traffic Coordinator</div><span class="badge badge-green">Active</span></div>
+          <div class="card-body">
+            <strong>Replaces:</strong> Traffic/project coordinator processing meetings<br>
+            <strong>System:</strong> Traffic Manager<br>
+            <strong>Output:</strong> Extracts briefs, deadlines, action items, and resource needs from every meeting transcript automatically.<br>
+            <strong>Saving:</strong> 5&ndash;10 hrs/week
+          </div>
+        </div>
+
+        <div class="card" style="border-left: 3px solid var(--accent)">
+          <div class="card-header"><div class="card-title">4. The Pitch Researcher</div><span class="badge badge-green">Active</span></div>
+          <div class="card-body">
+            <strong>Replaces:</strong> Research team doing competitive analysis<br>
+            <strong>System:</strong> AI-powered intelligence dashboards<br>
+            <strong>Output:</strong> Full competitive landscape, audience intelligence, strategic recommendations. Delivered in hours, not days.<br>
+            <strong>Example:</strong> IHG pitch dashboard built same day as brief received.
+          </div>
+        </div>
+
+        <div class="card" style="border-left: 3px solid var(--accent)">
+          <div class="card-header"><div class="card-title">5. The Morning Briefer</div><span class="badge badge-green">Active</span></div>
+          <div class="card-body">
+            <strong>Replaces:</strong> Someone manually compiling daily updates<br>
+            <strong>System:</strong> Daily Intelligence Briefings<br>
+            <strong>Output:</strong> Industry trends, client-specific signals, competitor activity. Ready before anyone walks in.<br>
+            <strong>Saving:</strong> 3&ndash;5 hrs/week
+          </div>
+        </div>
+
+      </div>
+
+      <div class="highlight-box" style="margin-top:24px;border-color:rgba(34,197,94,0.3);background:rgba(34,197,94,0.08)">
+        <strong style="color:var(--green)">Total equivalent headcount saved: ~1.0 FTE</strong><br>
+        Cost of 1 mid-level hire: ~$80&ndash;90K/yr + super + leave + equipment<br>
+        Cost of AI infrastructure: ~$4K/yr<br>
+        <strong style="color:var(--green)">ROI: 20&ndash;25x return on infrastructure investment</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: WHAT'S NEXT -->
+  <div id="next" class="tab-content">
+
+    <div class="section">
+      <div class="section-title">Immediate &mdash; This Week</div>
+
+      <div class="next-step">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">Restore Claude API Credits</div>
+          <div class="step-desc">Credits depleted &mdash; blocking AI tools. Borna to top up the Anthropic account. Without this, Culture Wire analysis pipeline, pitch research, and content generation are all degraded.</div>
+        </div>
+      </div>
+
+      <div class="next-step">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">February Invoice</div>
+          <div class="step-desc">Borna requested 5 Mar. Tom to send today.</div>
+        </div>
+      </div>
+
+      <div class="next-step">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">IHG Pitch Follow-Through</div>
+          <div class="step-desc">Intelligence dashboard delivered. JJ to review and confirm next steps for the pitch team.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Short Term &mdash; This Month</div>
+
+      <div class="next-step">
+        <div class="step-num">4</div>
+        <div>
+          <div class="step-title">Culture Wire v3.0 &mdash; Next.js Rebuild</div>
+          <div class="step-desc">9 of 10 phases complete. Auth flow is the final blocker (magic link redirect issue). Once resolved: modern UI, faster searches, multi-tenant ready. Alt/Shift gets the upgrade at no additional cost.</div>
+        </div>
+      </div>
+
+      <div class="next-step">
+        <div class="step-num">5</div>
+        <div>
+          <div class="step-title">Efficiency Audit</div>
+          <div class="step-desc">Map the biggest remaining time drains across the agency. Identify where existing tools are underutilised and where quick automation wins exist. No new builds &mdash; just maximising what's already deployed.</div>
+        </div>
+      </div>
+
+      <div class="next-step">
+        <div class="step-num">6</div>
+        <div>
+          <div class="step-title">Culture Wire &times; Damian Deep Dive</div>
+          <div class="step-desc">Rescheduled meeting with Damian. Align on how Culture Wire integrates into the planning team's daily workflow and what customisation is needed.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Medium Term</div>
+
+      <div class="next-step">
+        <div class="step-num">7</div>
+        <div>
+          <div class="step-title">Supabase Housekeeping</div>
+          <div class="step-desc">Resolve security vulnerability alert. Add tax ID to org. Ensure data infrastructure is clean and compliant.</div>
+        </div>
+      </div>
+
+      <div class="next-step">
+        <div class="step-num">8</div>
+        <div>
+          <div class="step-title">Website Video Fix</div>
+          <div class="step-desc">Replace broken Vimeo embed with direct video file. Sam/Michael investigating &mdash; Tom can fix if needed.</div>
+        </div>
+      </div>
+
+      <div class="next-step">
+        <div class="step-num">9</div>
+        <div>
+          <div class="step-title">Expanded Automation Opportunities</div>
+          <div class="step-desc">Based on efficiency audit: potential for automated media monitoring alerts, client report generation, social content calendar AI, and PR coverage tracking. Each evaluated on time saved vs. effort to build.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Alt/Shift AI Engagement Dashboard &bull; Tommy Hyde / Redbaez &bull; Updated March 2026
+</div>
+
+<script>
+function showTab(id, e) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (e && e.target) e.target.classList.add('active');
+}
+</script>
+</body>
+</html>
